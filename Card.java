@@ -20,16 +20,8 @@ public class Card {
 	public String getPoint() {
 		return point;
 	}
-	
-	public void setSuit(String s) {
-		suit = s;
-	}
-	
-	public void setFace(String s) {
-		face = s;
-	}
-	
-	public void setPoint(int n) {
-		point = n;
+
+	public boolean equals(Card c) { // comparing points not necessary, unless cards from dif. games are somehow being compared
+		return (suit.equals(c.getSuit())) && (face.equals(c.getFace()));
 	}
 }
