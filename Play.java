@@ -33,23 +33,29 @@ public class Play {
             return;
         }
 
-        System.out.println("\n\nWould you like to play again or choose a different game?");
-        System.out.println("Enter \"Play again\", \"Different game,\" or \"End\"");
-        input = sc.nextLine().toLowerCase();
-
-        if (input.contains("play") || input.contains("again")) {
-            games(index, sc);
-        } else if (input.contains("different") || input.contains("game")) {
-            main(args);
-        } else {
-            System.out.println("Thank you for playing");
-            return;
-        }
+        again(sc, args, index);
     }
 
     public static void games(int n, Scanner sc) {
         if (n == 0) {
             Blackjack b = new Blackjack(sc);
+        }
+    }
+
+    public static void again(Scanner sc, String[] args, int index) {
+        System.out.println("\n\nWould you like to play again or choose a different game?");
+        System.out.println("Enter \"Play again\", \"Different game,\" or \"End\"");
+        String input = sc.nextLine().toLowerCase();
+        System.out.println("\n");
+
+        if (input.contains("play") || input.contains("again")) {
+            games(index, sc);
+            again(sc, args, index);
+        } else if (input.contains("different") || input.contains("game")) {
+            main(args);
+        } else {
+            System.out.println("Thank you for playing");
+            return;
         }
     }
 }

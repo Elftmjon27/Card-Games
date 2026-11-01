@@ -100,7 +100,7 @@ public class Blackjack {
 
 
 
-        if (!checkLoss(dealer)) {
+        if (calculatePoints(dealer) > 21) {
             System.out.println("The Dealer has busted");
             printDealerBustedWinners();
         } else {
@@ -237,6 +237,7 @@ public class Blackjack {
         } else if (input.contains("double") || input.contains("down")) {
             if (h.getDeck().getAmountAvail() != 0) {
                 h.drawCard();
+                h.updateSize();
                 System.out.println("\n");
                 printHand(n, h);
 
@@ -272,7 +273,7 @@ public class Blackjack {
 
                 options(sc, n, h, 0);
             } else {
-                System.out.println("\nUnfortunately, do you not meet the requirements to split or the deck doesn't have enough cards to split");
+                System.out.println("\nUnfortunately, do you not meet the requirements to split or the deck doesn't have enough cards to split\n");
                 options(sc, n, h);
             }
 

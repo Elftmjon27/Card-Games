@@ -28,7 +28,7 @@ public class Hand {
         size = n;
         name = s;
         deck = d;
-        if (deck.getLength() > n) {
+        if (n > deck.getLength()) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
         }
         drawCard(c);
