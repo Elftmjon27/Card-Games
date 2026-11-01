@@ -30,6 +30,7 @@ public class Blackjack {
     boolean[][] active;
     Hand dealer;
 
+    // Gathers info about game (player count, players' hands, bets, etc)
     public Blackjack(Scanner sc) {
         totalPlayers = getPlayerCount(sc);
         
@@ -140,7 +141,7 @@ public class Blackjack {
         return n;
     }
 
-    // gets the bets of player n
+    // returns the bets of player n
     private double calculateBets(Scanner sc, int n) {
         System.out.print("Player " + n + ", how much money do you want to bet: $");
 
@@ -167,6 +168,7 @@ public class Blackjack {
          return m;
     }
 
+    // returns the points in Hand h
     private int calculatePoints(Hand h) {
         int sum = 0;
         int index = -1;
@@ -185,12 +187,14 @@ public class Blackjack {
         }
     }
 
+    // Prints out player p's hand called h
     private void printHand(int p, Hand h) {
         System.out.println("Player " + p + " has the following cards:");
         h.print();
         System.out.println("Total Points: " + calculatePoints(h) + "\n");
     }
 
+    // Offer the options players have in their turns
     private void options (Scanner sc, int n, Hand h) {
         System.out.println("Player " + n + ", what would you like to do?");
         System.out.println("Current Points = " + calculatePoints(h));
@@ -204,6 +208,7 @@ public class Blackjack {
        chooseOptions(sc, n, h); 
     }
 
+    // Offer the options to players who have split their deck
     private void options(Scanner sc, int n, Hand h, int i) {
         System.out.println("Player " + n + ", what would you like to do with your " + words[i] + " hand?");
         System.out.println("Here are your options: ");
@@ -214,6 +219,7 @@ public class Blackjack {
        chooseOptions(sc, n, h); 
     }
 
+    // Runs the code for each option
     private void chooseOptions (Scanner sc, int n, Hand h) {
         String input = sc.nextLine().toLowerCase();
 
@@ -224,7 +230,7 @@ public class Blackjack {
                 System.out.println("\n");
                 printHand(n, h);
 
-                if (!checkLoss(h)) {
+                if (calculatePoints(h) > 21) {
                     System.out.println("\nUnfortunately, your total points (" + calculatePoints(h) + ") is over 21, so you have lost $" + bets[n - 1]);
                     return;
                 }
@@ -241,7 +247,7 @@ public class Blackjack {
                 System.out.println("\n");
                 printHand(n, h);
 
-                if (!checkLoss(h)) {
+                if (calculatePoints(h) > 21) {
                     System.out.println("\nUnfortunately, your total points (" + calculatePoints(h) + ") is over 21, so you have lost $" + 2*bets[n - 1]);
                     return;
                 }
@@ -289,13 +295,7 @@ public class Blackjack {
         }
     }
 
-    private boolean checkLoss (Hand h) {
-        if (calculatePoints(h) > 21) {
-            return false;
-        }
-        return true;
-    }
-
+    // Prints out the results if the dealer busts
     private void printDealerBustedWinners () {
         boolean win = false;
         for (int i = 0; i < totalPlayers; i++) {
@@ -320,6 +320,7 @@ public class Blackjack {
         }
     }
 
+    // Prints out the results if the dealer doesn't bust
     private void printDealerSurvived (int d) { // d = dealer's score
         int state = 2; // 0 for win, 1 for tie, 2 for loss
         int n;
@@ -358,6 +359,7 @@ public class Blackjack {
         }
     }
 
+    // Instructions / Rules of the game
     private void instructions() {
         System.out.println("Welcome to Blackjack\n");
         System.out.println("You are competing against the dealer with the goal of building a hand closer to 21 than the dealer without going over");
@@ -366,5 +368,6 @@ public class Blackjack {
         System.out.println("If your hand has over 21 points, you lose your bet");
         System.out.println("If your score is greater than the dealer or the dealer gets over 21, then you win");
         System.out.println("If your score is the same as the dealer, you lose nothing");
+        System.out.println("\n");
     }
 }

@@ -28,7 +28,7 @@ public class Deck { // Deck of cards at beginning of game (from box)
 			amountAvail = l;
 			createDeck();
 		} else {
-			throw new IllegalArgumentException("Illegal Arguments: No empty arrays && point value array must be the same length as face array");
+			throw new IllegalArgumentException("No empty arrays && point value array must be the same length as face array");
 		}
 	}
 
@@ -44,16 +44,6 @@ public class Deck { // Deck of cards at beginning of game (from box)
 		}
 	}
 
-	// getter for Hand class, returns whether card is available in deck
-	public boolean getAvail(int i) {
-		return avail[i];
-	}
-
-	// getter for Hand class
-	public Card getCard(int i) { // int i is index of card
-		return pack[i];
-	}
-
 	// updates the availability of a card
 	public void updateCard(int i) { // int is index of card
 		if (avail[i]) {
@@ -64,11 +54,22 @@ public class Deck { // Deck of cards at beginning of game (from box)
 		avail[i] = !avail[i]; // swaps parity
 	}
 
+	// getter for Hand class
+	public Card getCard(int i) { // int i is index of card
+		return pack[i];
+	}
+
 	// retuns the length of the deck
 	public int getLength() {
 		return pack.length;
 	}
 
+	// getter for Hand class, returns whether card is available in deck
+	public boolean getAvail(int i) {
+		return avail[i];
+	}
+
+	// returns the number of cards available in the deck
 	public int getAmountAvail() {
 		return amountAvail;
 	}

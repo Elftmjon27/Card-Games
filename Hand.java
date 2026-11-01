@@ -7,14 +7,14 @@ public class Hand {
     // cards is an arraylist b/c regular arrays' property of immutable annoying when trying to add cards to hands
     private Deck deck; // another bad name
 
-    public Hand() {
+    public Hand() { // default
         size = 5;
         name = "Player";
         deck = new Deck();
         createHand(0);
     }
 
-    public Hand(int n, String s, Deck d) {
+    public Hand(int n, String s, Deck d) { // Specialized Hand
         size = n;
         name = s;
         deck = d;
@@ -24,7 +24,7 @@ public class Hand {
         createHand(0);
     }
 
-    public Hand(int n, String s, Deck d, Card c) {
+    public Hand(int n, String s, Deck d, Card c) { // SPecialized Hand with specific Card
         size = n;
         name = s;
         deck = d;
@@ -35,7 +35,7 @@ public class Hand {
         createHand(1);
     }
 
-
+    // Creates the hand
 	private void createHand(int s) {
         if (deck.getAmountAvail() - size < 0) {
             System.out.println("The deck doesn't have enough cards to create a new hand");
@@ -80,6 +80,7 @@ public class Hand {
         size--;
     }
 
+    // Shuffles the cards in hand
     public void shuffle() {
         Card temp;
         int r;
@@ -91,29 +92,35 @@ public class Hand {
         }
     }
 
+    // prints out the cards in the hand
     public void print() {
         for(Card c: cards) {
             c.print();
         }
     }
 
+    // prints out card at index i
     public void printCard(int i) {
         Card c = cards.get(i);
         c.print();
     }
 
+    // Returns the card at index i
     public Card getCard(int i) {
         return cards.get(i);
     }
 
-    public int getLength() {
-        return size;
-    }
-
+    // Returns the Deck the hand comes from
     public Deck getDeck() {
         return deck;
     }
 
+    // returns the number of cards in the hand
+    public int getLength() {
+        return size;
+    }
+
+    // updates the size of the hand (use when adding or removing cards to the hand)
     public void updateSize() {
         size++;
     }
