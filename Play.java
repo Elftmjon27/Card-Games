@@ -22,6 +22,7 @@ public class Play {
             if (input.contains(options[i].toLowerCase())) {
                 index = i;
                 i = options.length;
+                System.out.println("\n");
                 games(index, sc);
             }
         }
@@ -41,6 +42,7 @@ public class Play {
         } else if (input.contains("different game")) {
             main(args);
         } else {
+            System.out.println("Thank you for playing");
             return;
         }
     }

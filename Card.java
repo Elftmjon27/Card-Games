@@ -28,4 +28,8 @@ public class Card { // blueprints for individual cards
 	public void print() {
 		System.out.println(face + " of " + suit);
 	}
+
+	public void updatePoint(int n) {
+		point = n;
+	}
 }

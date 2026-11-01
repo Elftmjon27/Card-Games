@@ -18,7 +18,7 @@ public class Hand {
         size = n;
         name = s;
         deck = d;
-        if (deck.getLength() > n) {
+        if (n > deck.getLength()) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
         }
         createHand(0);
@@ -67,7 +67,8 @@ public class Hand {
     // adds a random card available in the deck
     public void drawCard() {
         try {
-        cards.add(findCard());
+            size++;
+            cards.add(findCard());
         } catch (IndexOutOfBoundsException e) {
             System.out.println("The Deck is empty");
         }

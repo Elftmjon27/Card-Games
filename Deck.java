@@ -14,11 +14,12 @@ public class Deck { // Deck of cards at beginning of game (from box)
 		pack = new Card[52];
 		avail = new boolean[52];
 		amountAvail = 52;
+		createDeck();
 	}
 	
 	public Deck(String[] s1, String[] s2, int[] i) { // specific deck of cards
 		int l = s1.length * s2.length;
-		if (l != 0 && s2.length > 0 && s2.length == i.length) { 
+		if (l != 0 && s2.length == i.length) { 
 			suits = s1;
 			faces = s2;
 			points = i;
