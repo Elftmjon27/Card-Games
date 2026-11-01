@@ -26,7 +26,7 @@ public class Blackjack {
         Scanner sc = new Scanner(System.in);
         int totalPlayers = getPlayerCount(sc);
         
-        Deck d = new Deck({"Clubs", "Spades", "Hearts", "Diamonds"}, {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"});
+        Deck d = new Deck({"Clubs", "Spades", "Hearts", "Diamonds"}, {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}, {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11});
         
     }
 

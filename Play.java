@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+// Only purpose of class is to play card games
+
 public class Play {
     // If going to add new games, you must update String[] options && games method 
     final String[] options = {"Blackjack"};

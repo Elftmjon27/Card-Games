@@ -1,4 +1,4 @@
-public class Card {
+public class Card { // blueprints for individual cards
 	private String suit; // group of cards
 	private String face; // design on card
 	private int point; // value of card
@@ -23,5 +23,9 @@ public class Card {
 
 	public boolean equals(Card c) { // comparing points not necessary, unless cards from dif. games are somehow being compared
 		return (suit.equals(c.getSuit())) && (face.equals(c.getFace()));
+	}
+
+	public void print() {
+		System.out.println(face + " of " + suit);
 	}
 }

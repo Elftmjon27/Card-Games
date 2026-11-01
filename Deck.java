@@ -1,38 +1,61 @@
 public class Deck { // Deck of cards at beginning of game (from box)
 	private String[] suits;
     private String[] faces;
+	private int[] points; // corresponds to faces
 
-	private int totalCardsChosen = 0;
-	private Card[] chosenCards; // Cards that have been put into players' hands and no longer available in the deck 
+	private Card[] pack; // deck of cards created from cards described by suits, faces, and 
+	private boolean[] avail; // stores whether the card is available in the pack
 	
 	public Deck() { // default
 		suits = {"Clubs", "Spades", "Hearts", "Diamonds"};
 		faces = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-		chosenCards = new Card[52];
+		points = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+		pack = new Card[52];
+		avail = new boolean[52];
 	}
 	
-	public Deck(String[] s1, String[] s2) {
-		if (s1.length() > 0 && s2.length() > 0) { 
+	public Deck(String[] s1, String[] s2, int[] i) { // specific deck of cards
+		if (s1.length() > 0 && s2.length() > 0 && s2.length() == i.length()) { 
 			suits = s1;
 			faces = s2;
-			chosenCards = new Card[s1.length() * s2.length()];
+			points = i;
+			pack = new Card[s1.lngth() * s2.length()];
+			avail = new boolean[s1.length() * s2.length()];
+			createDeck();
 		} else {
-			throw new IllegalArgumentException("String array arguments cannot be negative")
+			throw new IllegalArgumentException("Illegal Arguments: No empty arrays && point value array must be the same length as face array")
 		}
 	}
 
-	public void dealCards(int handSize) {
-		for (int i = 0; i < handSize; i++) {
-			
-		}
-	}
-
-	public boolean checkCardAvail(Card c) {
-		for (int i = 0; i < totalCardsChosen; i++) {
-			if (c.equals(chosenCards[i])) {
-				return true;
+	// helepr method for specialized constructor
+	private createDeck() {
+		int index = 0;
+		for (String s : suits) {
+			for (int i = 0; i < faces.length(); i++) {
+				pack[index] = new Card(s, faces[i], points[i]);
+				avail[index] = true;
+				index++;
 			}
 		}
-		return false;
+	}
+
+	// getter for Hand class, returns whether card is available in deck
+	public boolean[] getAvail() {
+		return avail;
+	}
+
+	// getter for Hand class
+	public Card getCard(int i) { // int i is index of card
+		return pack[i];
+	}
+
+	// updates the availability of a card
+	public void updateCard(int i) { // int is index of card
+		avail[i] = !avail[i]; // swaps parity
+	}
+
+	// retuns the length of the deck
+	public int getLength() {
+		return pack.length;
 	}
 }
