@@ -5,6 +5,7 @@ public class Deck { // Deck of cards at beginning of game (from box)
 
 	private Card[] pack; // deck of cards created from cards described by suits, faces, and 
 	private boolean[] avail; // stores whether the card is available in the pack
+	private int amountAvail;
 	
 	public Deck() { // default
 		suits = {"Clubs", "Spades", "Hearts", "Diamonds"};
@@ -12,6 +13,7 @@ public class Deck { // Deck of cards at beginning of game (from box)
 		points = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
 		pack = new Card[52];
 		avail = new boolean[52];
+		amountAvail = 52;
 	}
 	
 	public Deck(String[] s1, String[] s2, int[] i) { // specific deck of cards
@@ -21,13 +23,14 @@ public class Deck { // Deck of cards at beginning of game (from box)
 			points = i;
 			pack = new Card[s1.lngth() * s2.length()];
 			avail = new boolean[s1.length() * s2.length()];
+			amountAvail = s1.length() * s2.length();
 			createDeck();
 		} else {
 			throw new IllegalArgumentException("Illegal Arguments: No empty arrays && point value array must be the same length as face array")
 		}
 	}
 
-	// helepr method for specialized constructor
+	// helper method for specialized constructor
 	private createDeck() {
 		int index = 0;
 		for (String s : suits) {
@@ -51,11 +54,20 @@ public class Deck { // Deck of cards at beginning of game (from box)
 
 	// updates the availability of a card
 	public void updateCard(int i) { // int is index of card
+		if (avail[i]) {
+			amountAvail--; // if true, then it will turn to false, so lower amount Avail
+		} else {
+			amountAvail++;
+		}
 		avail[i] = !avail[i]; // swaps parity
 	}
 
 	// retuns the length of the deck
 	public int getLength() {
 		return pack.length;
+	}
+
+	public int getAmountAvail() {
+		return amountAvail;
 	}
 }
