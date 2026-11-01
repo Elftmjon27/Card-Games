@@ -17,7 +17,7 @@ public class Card { // blueprints for individual cards
 		return face;
 	}
 	
-	public String getPoint() {
+	public int getPoint() {
 		return point;
 	}
 

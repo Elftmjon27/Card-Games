@@ -1,7 +1,9 @@
+import java.util.ArrayList;
+
 public class Hand {
     private int size;
     private String name;
-    private ArrayList<Card> cards = new ArrayList<>; // bad name, can't think of a better one
+    private ArrayList<Card> cards = new ArrayList<>(); // bad name, can't think of a better one
     // cards is an arraylist b/c regular arrays' property of immutable annoying when trying to add cards to hands
     private Deck deck; // another bad name
 
@@ -16,7 +18,7 @@ public class Hand {
         size = n;
         name = s;
         deck = d;
-        if (deck.getlength() > n) {
+        if (deck.getLength() > n) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
         }
         createHand(0);
@@ -26,7 +28,7 @@ public class Hand {
         size = n;
         name = s;
         deck = d;
-        if (deck.getlength() > n) {
+        if (deck.getLength() > n) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
         }
         drawCard(c);
@@ -48,15 +50,14 @@ public class Hand {
     // helper method to get available card
     private Card findCard() {
         if (deck.getAmountAvail() == 0) {
-            System.out.println("The Deck is empty, you cannot get more cards");
-            return;
+            throw new IndexOutOfBoundsException("The Deck is empty");
         }
 
         int r = (int) (Math.random()*deck.getLength());
         // As the deck gets smaller (relative to initial size), this will take longer and longer (be aware of run-time)
 
         while (!(deck.getAvail(r))) { // ensures card is available, only false if card not available
-			r = (int) (Math.random()*pack.length());
+			r = (int) (Math.random()*deck.getLength());
 		}
 
         deck.updateCard(r);
@@ -65,7 +66,11 @@ public class Hand {
 
     // adds a random card available in the deck
     public void drawCard() {
+        try {
         cards.add(findCard());
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("The Deck is empty");
+        }
     }
 
     // adds a specific card (doesn't check if available in the deck)
@@ -75,7 +80,7 @@ public class Hand {
 
     // removes specific card from the hand
     public void removeCard(Card c) {
-        cards.remove(Card c);
+        cards.remove(c);
         size--;
     }
 
@@ -102,7 +107,7 @@ public class Hand {
     }
 
     public Card getCard(int i) {
-        return cards[i];
+        return cards.get(i);
     }
 
     public int getLength() {

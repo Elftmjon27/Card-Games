@@ -8,33 +8,34 @@ public class Deck { // Deck of cards at beginning of game (from box)
 	private int amountAvail;
 	
 	public Deck() { // default
-		suits = {"Clubs", "Spades", "Hearts", "Diamonds"};
-		faces = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-		points = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+		suits = new String[]{"Clubs", "Spades", "Hearts", "Diamonds"};
+		faces = new String[]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
+		points = new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
 		pack = new Card[52];
 		avail = new boolean[52];
 		amountAvail = 52;
 	}
 	
 	public Deck(String[] s1, String[] s2, int[] i) { // specific deck of cards
-		if (s1.length() > 0 && s2.length() > 0 && s2.length() == i.length()) { 
+		int l = s1.length * s2.length;
+		if (l != 0 && s2.length > 0 && s2.length == i.length) { 
 			suits = s1;
 			faces = s2;
 			points = i;
-			pack = new Card[s1.lngth() * s2.length()];
-			avail = new boolean[s1.length() * s2.length()];
-			amountAvail = s1.length() * s2.length();
+			pack = new Card[l];
+			avail = new boolean[l];
+			amountAvail = l;
 			createDeck();
 		} else {
-			throw new IllegalArgumentException("Illegal Arguments: No empty arrays && point value array must be the same length as face array")
+			throw new IllegalArgumentException("Illegal Arguments: No empty arrays && point value array must be the same length as face array");
 		}
 	}
 
 	// helper method for specialized constructor
-	private createDeck() {
+	private void createDeck() {
 		int index = 0;
 		for (String s : suits) {
-			for (int i = 0; i < faces.length(); i++) {
+			for (int i = 0; i < faces.length; i++) {
 				pack[index] = new Card(s, faces[i], points[i]);
 				avail[index] = true;
 				index++;
@@ -43,8 +44,8 @@ public class Deck { // Deck of cards at beginning of game (from box)
 	}
 
 	// getter for Hand class, returns whether card is available in deck
-	public boolean[] getAvail() {
-		return avail;
+	public boolean getAvail(int i) {
+		return avail[i];
 	}
 
 	// getter for Hand class

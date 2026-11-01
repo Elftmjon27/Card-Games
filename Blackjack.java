@@ -30,9 +30,7 @@ public class Blackjack {
     boolean[][] active;
     Hand dealer;
 
-   // Main method, the game itself
-    public void game() {
-        Scanner sc = new Scanner(System.in);
+    public Blackjack(Scanner sc) {
         totalPlayers = getPlayerCount(sc);
         
         bets = new double[totalPlayers];
@@ -40,9 +38,9 @@ public class Blackjack {
             bets[b] = calculateBets(sc, b + 1);
         }
 
-        d = new Deck({"Clubs", "Spades", "Hearts", "Diamonds"}, 
-        {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}, 
-        {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11});
+        d = new Deck(new String[]{"Clubs", "Spades", "Hearts", "Diamonds"}, 
+        new String[]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}, 
+        new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11});
 
         hands = new Hand[totalPlayers][4]; // creating players' hands
         for (int i = 0; i < totalPlayers; i++) {
@@ -55,6 +53,11 @@ public class Blackjack {
 
         dealer = new Hand(2, "Dealer", d); // crearing dealer's hand
 
+        game(sc);
+    }
+
+   // Main method, the game itself
+    public void game(Scanner sc) {
         System.out.println("The Dealer's cards"); // prints dealer's hand
         dealer.printCard(0);
         System.out.println("Unknown\n");
@@ -82,10 +85,10 @@ public class Blackjack {
         } 
 
         if (!checkLoss(dealer)) {
-            System.out.println("The Dealer has busted")
+            System.out.println("The Dealer has busted");
             printDealerBustedWinners();
         } else {
-            printDealerSurvived();
+            printDealerSurvived(calculatePoints(dealer));
         }
     }
 
@@ -95,7 +98,7 @@ public class Blackjack {
 
         String input;
         boolean repeat = true;
-        int n;
+        int n = 0;
 
         while (repeat) {
             input = sc.nextLine();
@@ -110,24 +113,24 @@ public class Blackjack {
 
         if (n < 0) {
             System.out.println("You can't have negative players");
-            return getPlayerCount();
+            return getPlayerCount(sc);
         } else if (n == 0) {
             System.out.println("You can't have zero players");
-            return getPlayerCount();
+            return getPlayerCount(sc);
         } else if (n > 6) {
             System.out.println("You can't have more than 6 players");
-            return getPlayerCount();
+            return getPlayerCount(sc);
         }
         return n;
     }
 
     // gets the bets of player n
     private double calculateBets(Scanner sc, int n) {
-        System.out.print("Player " + n + ", how much money do you want to bet: ")
+        System.out.print("Player " + n + ", how much money do you want to bet: ");
 
         String input;
         boolean repeat = true;
-        double m;
+        double m = 0;
 
         while (repeat) {
             input = sc.nextLine();
@@ -157,7 +160,7 @@ public class Blackjack {
     }
 
     private void printHand(int p, Hand h) {
-        System.out.println("Player " + p + " has the following cards:")
+        System.out.println("Player " + p + " has the following cards:");
         h.print();
         System.out.println("Total Points: " + calculatePoints(h) + "\n");
     }
@@ -219,7 +222,7 @@ public class Blackjack {
                 options(sc, n, h);
             }
         } else if (input.contains("split")) {
-            if (h.getLength() == 2 && h.getCard(0).getPoints() == h.getCard(1).getPoints() && !active[n - 1][3] && h.getDeck().getAmountAvail() >= 2) {
+            if (h.getLength() == 2 && h.getCard(0).getPoint() == h.getCard(1).getPoint() && !active[n - 1][3] && h.getDeck().getAmountAvail() >= 2) {
                 // only allow two identital valued cards & only 3 splits allowed (checks if last hand slot for player empty) & whether deck has enough cards
 
                 Card temp = h.getCard(0);
@@ -257,14 +260,14 @@ public class Blackjack {
     }
 
     private boolean checkLoss (Hand h) {
-        if (calculatePoints() > 21) {
+        if (calculatePoints(h) > 21) {
             return false;
         }
         return true;
     }
 
     private void printDealerBustedWinners () {
-        boolean win;
+        boolean win = false;
         for (int i = 0; i < totalPlayers; i++) {
             if (active[i][1]) {
                 for (int j = 0; j < 4; j++) {
@@ -273,13 +276,13 @@ public class Blackjack {
                     }
                 }
             } else {
-                if (calculatePoints(hands[i][0] <= 21)) {
+                if (calculatePoints(hands[i][0]) <= 21) {
                     win = true;
                 }
             }
 
             if (win) {
-                System.out.println("Player " + (i + 1) wins + " $" + bets[i]);
+                System.out.println("Player " + (i + 1) + "wins $" + bets[i]);
             }
             win = false;
         }
@@ -292,7 +295,7 @@ public class Blackjack {
         for (int i = 0; i < totalPlayers; i++) {
             if (active[i][1]) {
                 for (int j = 0; j < 4; j++) {
-                    int n = calculatePoints(hands[i][j]);
+                    n = calculatePoints(hands[i][j]);
                     if (n > 21 && state > 1) {
                         state = 2;
                     } else if (n == d && state > 0) {
@@ -302,7 +305,7 @@ public class Blackjack {
                     }
                 }
             } else {
-                int n = calculatePoints(hands[i][0]);
+                n = calculatePoints(hands[i][0]);
                 if (n > 21 && state > 1) {
                     state = 2;
                 } else if (n == d && state > 0) {
@@ -313,7 +316,7 @@ public class Blackjack {
             }
 
             if (state == 2 ) {
-                System.out.println("Player " + (i + 1) loses + " $" + bets[i]);
+                System.out.println("Player " + (i + 1) + "loses $" + bets[i]);
             } else if (state == 1) {
                 System.out.println("Player " + (i + 1) + " ties and keeps $" + bets[i]);
             } else {
