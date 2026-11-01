@@ -37,9 +37,9 @@ public class Play {
         System.out.println("Enter \"Play again\", \"Different game,\" or \"End\"");
         input = sc.nextLine().toLowerCase();
 
-        if (input.contains("play again")) {
+        if (input.contains("play") || input.contains("again")) {
             games(index, sc);
-        } else if (input.contains("different game")) {
+        } else if (input.contains("different") || input.contains("game")) {
             main(args);
         } else {
             System.out.println("Thank you for playing");

@@ -66,12 +66,7 @@ public class Hand {
 
     // adds a random card available in the deck
     public void drawCard() {
-        try {
-            size++;
-            cards.add(findCard());
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("The Deck is empty");
-        }
+        cards.add(findCard());
     }
 
     // adds a specific card (doesn't check if available in the deck)
@@ -117,5 +112,9 @@ public class Hand {
 
     public Deck getDeck() {
         return deck;
+    }
+
+    public void updateSize() {
+        size++;
     }
 }
