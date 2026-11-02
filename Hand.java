@@ -121,7 +121,10 @@ public class Hand {
     }
 
     // updates the size of the hand (use when adding or removing cards to the hand)
-    public void updateSize() {
-        size++;
+    public void updateSize(int n) {
+		if (n < 0) {
+			throw new IllegalArgumentException("Size can't be negative");
+		}
+        size = n;
     }
 }

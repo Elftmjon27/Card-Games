@@ -90,7 +90,7 @@ public class Blackjack {
             if (dealer.getDeck().getAmountAvail() != 0) {
                 System.out.println("\nhit");
                 dealer.drawCard();
-                dealer.updateSize();
+                dealer.updateSize(dealer.getLength() + 1);
                 dealer.printCard(index);
                 index++;
             } else {
@@ -196,8 +196,8 @@ public class Blackjack {
 
     // Offer the options players have in their turns
     private void options (Scanner sc, int n, Hand h) {
+        printHand(n, h);
         System.out.println("Player " + n + ", what would you like to do?");
-        System.out.println("Current Points = " + calculatePoints(h));
         System.out.println("Here are your options: ");
         // final String[] actions = {"Hit", "Stand", "Double Down", "Split", "Action Guide"};
         for (String a : actions) {
@@ -210,11 +210,13 @@ public class Blackjack {
 
     // Offer the options to players who have split their deck
     private void options(Scanner sc, int n, Hand h, int i) {
+		printHand(n, h);
         System.out.println("Player " + n + ", what would you like to do with your " + words[i] + " hand?");
         System.out.println("Here are your options: ");
         for (String a : actions) {
             System.out.println(a);
         }
+        System.out.println("\n");
 
        chooseOptions(sc, n, h); 
     }
@@ -226,9 +228,8 @@ public class Blackjack {
         if (input.contains("hit")) {
             if (h.getDeck().getAmountAvail() != 0) {
                 h.drawCard();
-                h.updateSize();
+                h.updateSize(h.getLength() + 1);
                 System.out.println("\n");
-                printHand(n, h);
 
                 if (calculatePoints(h) > 21) {
                     System.out.println("\nUnfortunately, your total points (" + calculatePoints(h) + ") is over 21, so you have lost $" + bets[n - 1]);
@@ -243,7 +244,7 @@ public class Blackjack {
         } else if (input.contains("double") || input.contains("down")) {
             if (h.getDeck().getAmountAvail() != 0) {
                 h.drawCard();
-                h.updateSize();
+                h.updateSize(h.getLength() + 1);
                 System.out.println("\n");
                 printHand(n, h);
 
@@ -252,6 +253,7 @@ public class Blackjack {
                     return;
                 }
 
+				bets[n - 1] *= 2;
                 System.out.println("\nYour new bet is $" + bets[n - 1] + " & your final total points are " + calculatePoints(h));
             } else {
                 System.out.println("\nUnfortunately, the deck is out of cards\n");
@@ -263,18 +265,20 @@ public class Blackjack {
 
                 Card temp = h.getCard(0);
                 h.removeCard(temp);
+                h.drawCard();
+                h.updateSize(2); 
                 if (!active[n - 1][1]) { // first split
                    hands[n - 1][1] = new Hand(2, "Player", d, temp);
                    active[n - 1][1] = true;
-                   options(sc, n, h, 1);
+                   options(sc, n, hands[n - 1][1], 1);
                 } else if (!active[n - 1][2]) { // second split
                    hands[n - 1][2] = new Hand(2, "Player", d, temp);
                    active[n-1][2] = true;
-                   options(sc, n, h, 2);
+                   options(sc, n, hands[n - 1][2], 2);
                 } else { // last (third) split
                    hands[n - 1][3] = new Hand(2, "Player", d, temp);
                    active[n-1][3] = true;
-                   options(sc, n, h, 3);
+                   options(sc, n, hands[n - 1][3], 3);
                 }
 
                 options(sc, n, h, 0);
@@ -301,7 +305,7 @@ public class Blackjack {
         for (int i = 0; i < totalPlayers; i++) {
             if (active[i][1]) {
                 for (int j = 0; j < 4; j++) {
-                    if (calculatePoints(hands[i][j]) <= 21) {
+                    if (calculatePoints(hands[i][j]) <= 21 && calculatePoints(hands[i][j]) != 0) {
                         win = true;
                     }
                 }
@@ -321,7 +325,7 @@ public class Blackjack {
     }
 
     // Prints out the results if the dealer doesn't bust
-    private void printDealerSurvived (int d) { // d = dealer's score
+    private void printDealerSurvived (int dealerScore) { // d = dealer's score
         int state = 2; // 0 for win, 1 for tie, 2 for loss
         int n;
 
@@ -329,26 +333,27 @@ public class Blackjack {
             if (active[i][1]) {
                 for (int j = 0; j < 4; j++) {
                     n = calculatePoints(hands[i][j]);
-                    if (n > 21 && state > 1) {
+                    if (n > 21 && state == 2) { // if one deck tie or win, no lose
                         state = 2;
-                    } else if (n == d && state > 0) {
+                    } else if (n == dealerScore) {
                         state = 1;
-                    } else {
+                    } else if (n > dealerScore) {
                         state = 0;
+                        j = 4; // ends if one deck wins
                     }
                 }
             } else {
                 n = calculatePoints(hands[i][0]);
-                if (n > 21 && state > 1) {
+                if (n > 21) {
                     state = 2;
-                } else if (n == d && state > 0) {
+                } else if (n == dealerScore) {
                     state = 1;
                 } else {
                     state = 0;
                 }
             }
 
-            if (state == 2 ) {
+            if (state == 2) {
                 System.out.println("Player " + (i + 1) + " loses $" + bets[i]);
             } else if (state == 1) {
                 System.out.println("Player " + (i + 1) + " ties and keeps $" + bets[i]);
