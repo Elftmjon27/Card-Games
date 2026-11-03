@@ -7,12 +7,11 @@ public class Play {
     final static String[] options = {"Blackjack"};
 
     public static void main(String[] args) {
-        System.out.println("What card game would you like to play?");
         System.out.println("We have the following games:");
         for (String s : options) {
             System.out.println(s);
         }
-        System.out.println("\n");
+        System.out.print("\nEnter the game you want to play: ");
 
         Scanner sc = new Scanner(System.in);
         String input = sc.nextLine().toLowerCase();
@@ -22,7 +21,6 @@ public class Play {
             if (input.contains(options[i].toLowerCase())) {
                 index = i;
                 i = options.length;
-                System.out.println("\n");
                 games(index, sc);
             }
         }

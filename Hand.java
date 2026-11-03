@@ -127,4 +127,9 @@ public class Hand {
 		}
         size = n;
     }
+
+    // returns the name of the owner of the hand
+    public String getName() {
+        return name;
+    }
 }

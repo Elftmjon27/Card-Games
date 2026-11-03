@@ -45,44 +45,45 @@ public class Blackjack {
 
         hands = new Hand[totalPlayers][4]; // creating players' hands
         for (int i = 0; i < totalPlayers; i++) {
-            hands[i][0] = new Hand(2, "Player", d);
+            hands[i][0] = new Hand(2, "Player " + (i + 1), d);
         }
         active = new boolean[totalPlayers][4]; // array that records whether a player has completed the turns on their hands (true if they haven't)
         for (int j = 0; j < totalPlayers; j++) {
             active[j][0] = true;
         }
 
-        dealer = new Hand(2, "Dealer", d); // crearing dealer's hand
+        dealer = new Hand(2, "The Dealer", d); // crearing dealer's hand
 
         game(sc);
     }
 
    // Main method, the game itself
     public void game(Scanner sc) {
-
-        System.out.println("\n------------------------------------------------");
-        System.out.println("The Dealer's cards:"); // prints dealer's hand
-        dealer.printCard(0);
-        System.out.println("Unknown\n");
-        System.out.println("Known Points: " + dealer.getCard(0).getPoint() + "\n");
-        System.out.println("------------------------------------------------");
-
+        System.out.println("\n");
         for (int i = 0; i < totalPlayers; i++) { // prints players' hands
             System.out.println("------------------------------------------------");
-            printHand(i + 1, hands[i][0]);
+            printHand(hands[i][0]);
             System.out.println("------------------------------------------------");
         }
 
+        System.out.println("------------------------------------------------");
+        System.out.println("The Dealer's cards:"); // prints dealer's hand
+        dealer.printCard(0);
+        System.out.println("Unknown");
+        System.out.println("Known Points: " + dealer.getCard(0).getPoint() + "");
+        System.out.println("------------------------------------------------");
+
+
         for (int j = 0; j < totalPlayers; j++) { // giving every player options on their turn
             System.out.println("------------------------------------------------");
-            options(sc, j + 1, hands[j][0]);
+            options(sc, j + 1, hands[j][0], -1);
             System.out.println("------------------------------------------------");
         }
 
         System.out.println("\n------------------------------------------------");
         System.out.println("Dealer's Turn:");
         dealer.printCard(0);
-        dealer.printCard(1);
+        printHand(dealer);
 
         boolean escape = true;
         int index = 2;
@@ -99,14 +100,11 @@ public class Blackjack {
         }
         System.out.println("Dealer's Final Points: " + calculatePoints(dealer) + "\n");
 
-
-
         if (calculatePoints(dealer) > 21) {
             System.out.println("The Dealer has busted");
-            printDealerBustedWinners();
-        } else {
-            printDealerSurvived(calculatePoints(dealer));
         }
+
+        printOutcomes(calculatePoints(dealer));
     }
 
     // Gets the number of players
@@ -187,49 +185,43 @@ public class Blackjack {
         }
     }
 
-    // Prints out player p's hand called h
-    private void printHand(int p, Hand h) {
-        System.out.println("Player " + p + " has the following cards:");
+    // Prints out the cards in the hand along with total point value
+    private void printHand(Hand h) {
+        System.out.println(h.getName() + " has the following cards:");
         h.print();
-        System.out.println("Total Points: " + calculatePoints(h) + "\n");
+        System.out.println("Total Points: " + calculatePoints(h));
     }
 
-    // Offer the options players have in their turns
-    private void options (Scanner sc, int n, Hand h) {
-        printHand(n, h);
-        System.out.println("Player " + n + ", what would you like to do?");
-        System.out.println("Here are your options: ");
-        // final String[] actions = {"Hit", "Stand", "Double Down", "Split", "Action Guide"};
-        for (String a : actions) {
-            System.out.println(a);
+    // Offer the options to players
+    private void options(Scanner sc, int n, Hand h, int i) { // i is to account whether player has split or playing regularly
+		printHand(h);
+
+        if (i == -1) {
+            System.out.println("\nPlayer " + n + ", what would you like to do?");
+        } else {
+            System.out.println("\nPlayer " + n + ", what would you like to do with your " + words[i] + " hand?");
         }
-        System.out.println("\n");
-
-       chooseOptions(sc, n, h); 
-    }
-
-    // Offer the options to players who have split their deck
-    private void options(Scanner sc, int n, Hand h, int i) {
-		printHand(n, h);
-        System.out.println("Player " + n + ", what would you like to do with your " + words[i] + " hand?");
+        
         System.out.println("Here are your options: ");
         for (String a : actions) {
             System.out.println(a);
         }
         System.out.println("\n");
 
-       chooseOptions(sc, n, h); 
+       chooseOptions(sc, n, h, i); 
     }
 
     // Runs the code for each option
-    private void chooseOptions (Scanner sc, int n, Hand h) {
+    private void chooseOptions (Scanner sc, int n, Hand h, int i) {
         String input = sc.nextLine().toLowerCase();
 
         if (input.contains("hit")) {
             if (h.getDeck().getAmountAvail() != 0) {
                 h.drawCard();
                 h.updateSize(h.getLength() + 1);
-                System.out.println("\n");
+
+                h.getCard(h.getLength() - 1).print();
+                System.out.println("Current Points: " + calculatePoints(h) + "\n");
 
                 if (calculatePoints(h) > 21) {
                     System.out.println("\nUnfortunately, your total points (" + calculatePoints(h) + ") is over 21, so you have lost $" + bets[n - 1]);
@@ -238,26 +230,27 @@ public class Blackjack {
             } else {
                 System.out.println("\nUnfortunately, the deck is out of cards");
             }
-            options(sc, n, h);
+            chooseOptions(sc, n, h, i);
         } else if (input.contains("stand")) {
-            System.out.println("\nFinal Total: " + calculatePoints(h));
+            System.out.println("Final Total: " + calculatePoints(h));
         } else if (input.contains("double") || input.contains("down")) {
             if (h.getDeck().getAmountAvail() != 0) {
                 h.drawCard();
                 h.updateSize(h.getLength() + 1);
-                System.out.println("\n");
-                printHand(n, h);
+                printHand(h);
+
+                bets[n - 1] *= 2;
 
                 if (calculatePoints(h) > 21) {
-                    System.out.println("\nUnfortunately, your total points (" + calculatePoints(h) + ") is over 21, so you have lost $" + 2*bets[n - 1]);
+                    System.out.println("\nUnfortunately, your total points (" + calculatePoints(h) + ") is over 21, so you have lost $" + bets[n - 1]);
                     return;
                 }
 
-				bets[n - 1] *= 2;
+                h.getCard(h.getLength() - 1).print();
                 System.out.println("\nYour new bet is $" + bets[n - 1] + " & your final total points are " + calculatePoints(h));
             } else {
                 System.out.println("\nUnfortunately, the deck is out of cards\n");
-                options(sc, n, h);
+                chooseOptions(sc, n, h, i);
             }
         } else if (input.contains("split")) {
             if (h.getLength() == 2 && h.getCard(0).getPoint() == h.getCard(1).getPoint() && !active[n - 1][3] && h.getDeck().getAmountAvail() >= 2) {
@@ -267,24 +260,26 @@ public class Blackjack {
                 h.removeCard(temp);
                 h.drawCard();
                 h.updateSize(2); 
+
+                int index;
                 if (!active[n - 1][1]) { // first split
-                   hands[n - 1][1] = new Hand(2, "Player", d, temp);
-                   active[n - 1][1] = true;
-                   options(sc, n, hands[n - 1][1], 1);
+                    index = 1;
                 } else if (!active[n - 1][2]) { // second split
-                   hands[n - 1][2] = new Hand(2, "Player", d, temp);
-                   active[n-1][2] = true;
-                   options(sc, n, hands[n - 1][2], 2);
+                   index = 2;
                 } else { // last (third) split
-                   hands[n - 1][3] = new Hand(2, "Player", d, temp);
-                   active[n-1][3] = true;
-                   options(sc, n, hands[n - 1][3], 3);
+                   index = 3;
                 }
 
+                hands[n - 1][index] = new Hand(2, "Player " + n, d, temp);
+                active[n-1][index] = true;
+                System.out.println("------------------------------------------------");
+                options(sc, n, hands[n - 1][index], index);
+
+                System.out.println("------------------------------------------------");
                 options(sc, n, h, 0);
             } else {
                 System.out.println("\nUnfortunately, do you not meet the requirements to split or the deck doesn't have enough cards to split\n");
-                options(sc, n, h);
+                chooseOptions(sc, n, h, i);
             }
 
         } else if (input.contains("action") || input.contains("guide")) {
@@ -292,59 +287,44 @@ public class Blackjack {
             System.out.println("Stand: You end your turn and keep your current total");
             System.out.println("Double Down: You double your bet, take your final card, and end your turn");
             System.out.println("Split: If you only have two identital valued cards, you can split them into two hands and \nplace a second bet equal to the first\n");
-            options(sc, n, h);
+            options(sc, n, h, i);
         } else {
             System.out.println("\nEnter valid option");
-            chooseOptions(sc, n, h);
+            chooseOptions(sc, n, h, i);
         }
     }
 
-    // Prints out the results if the dealer busts
-    private void printDealerBustedWinners () {
-        boolean win = false;
-        for (int i = 0; i < totalPlayers; i++) {
-            if (active[i][1]) {
-                for (int j = 0; j < 4; j++) {
-                    if (calculatePoints(hands[i][j]) <= 21 && calculatePoints(hands[i][j]) != 0) {
-                        win = true;
-                    }
-                }
-            } else {
-                if (calculatePoints(hands[i][0]) <= 21) {
-                    win = true;
-                }
-            }
-
-            if (win) {
-                System.out.println("Player " + (i + 1) + " wins $" + bets[i]);
-            } else {
-                System.out.println("Player " + (i + 1) + " loses $" + bets[i]);
-            }
-            win = false;
-        }
-    }
-
-    // Prints out the results if the dealer doesn't bust
-    private void printDealerSurvived (int dealerScore) { // d = dealer's score
-        int state = 2; // 0 for win, 1 for tie, 2 for loss
+    // prints out the results of the game
+    private void printOutcomes(int dealerScore) {
+        int state; // 0 for win, 1 for tie, 2 for loss
         int n;
 
         for (int i = 0; i < totalPlayers; i++) {
+            state = 2;
             if (active[i][1]) {
                 for (int j = 0; j < 4; j++) {
                     n = calculatePoints(hands[i][j]);
-                    if (n > 21 && state == 2) { // if one deck tie or win, no lose
-                        state = 2;
-                    } else if (n == dealerScore) {
-                        state = 1;
-                    } else if (n > dealerScore) {
-                        state = 0;
-                        j = 4; // ends if one deck wins
+                    int currentState = 2;
+
+                    if (n <= 21) { // only checks for valid decks
+                        if(dealerScore > 21 || n > dealerScore) { // wins if dealer busts or less than dealer's score (not busted)
+                            currentState = 0;
+                        } else if (n == dealerScore) { // ties if they are the same (previous condition checks if dealer has busted)
+                            currentState = 1;
+                        }
+                    }
+
+                    if (currentState < state) {
+                        state = currentState;
+                    }
+
+                    if (state == 0) {
+                        j = 4; // ends loop early
                     }
                 }
             } else {
                 n = calculatePoints(hands[i][0]);
-                if (n > 21) {
+                if (n > 21 || (n < dealerScore && dealerScore <= 21)) {
                     state = 2;
                 } else if (n == dealerScore) {
                     state = 1;
