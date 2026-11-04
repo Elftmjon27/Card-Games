@@ -7,19 +7,29 @@
 import java.util.ArrayList;
 public class Deck {
 	private Card[] pack; // deck of cards created from cards described by suits, faces, and point values of the faces
-	private ArrayList<Card> availCards = new ArrayList<>(); // subset of pack, stores all cards available for players to draw
-	private ArrayList<Card> discardedCards = new ArrayList<>(); // subset of deck, stores all cards that have been discarded, thus availale to be added back into the deck
+	private Card[] availCards; // subset of pack, stores all cards available for players to draw
+	private int availCardsSize;
+	private Card[] discardedCards; // subset of deck, stores all cards that have been discarded, thus availale to be added back into the deck
+	private int discardedCardsSize = 0;
 
 	public Deck() { // default constructor
 		pack = new Card[52];
+		availCards = new Card[52];
+		availCardsSize = 52;
+		discardedCards = new Card[52];
 		createDeck(new String[]{"Clubs", "Spades", "Hearts", "Diamonds"}, 
 		new String[]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}, 
 		new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14});
 	}
 	
 	public Deck(String[] s1, String[] s2, int[] p) { // specialized constructor
-		if (s1.length * s2.length != 0 && s2.length == p.length) { 
-			pack = new Card[s1.length * s2.length];
+		int l1 = s1.length;
+		int l2 = s2.length;
+		if (l1 * l2 != 0 && l2 == p.length) { 
+			pack = new Card[l1 * l2];
+			availCards = new Card[l1*l2];
+			availCardsSize = l1*l2;
+			discardedCards = new Card[l1*l2];
 			createDeck(s1, s2, p);
 		} else {
 			throw new IllegalArgumentException("No empty arrays && point value array must be the same length as face array");
@@ -35,20 +45,28 @@ public class Deck {
 			for (int i = 0; i < l; i++) {
 				c = new Card(s, faces[i], points[i]);
 				pack[index] = c;
+				availCards[index] = c;
 				index++;
-				availCards.add(c);
 			}
 		}
 	}
 
 	// Draws a singular card from the avail cards in the deck, removing it from viable options
 	public Card getCardRandom() {
-		if (availCards.size() == 0) {
+		if (availCardsSize == 0) {
 			throw new IndexOutOfBoundsException("The Deck is empty");
 		}
 
-		Card c = availCards.get((int) (Math.random() * availCards.size()));
-		availCards.remove(c);
+		int r = (int) (Math.random()*pack.length);
+		
+		while (availCards[r] != null) {
+			r = (int) (Math.random()*pack.length);
+		}
+		
+		Card c = availCards[r];
+		availCards[r] = null;
+		addDiscardedCard(c);
+	
 		return c;
 	}
 
@@ -59,19 +77,31 @@ public class Deck {
 
 	// returns the number of cards available in the deck
 	public int getAmountAvail() {
-		return availCards.size();
+		return availCardsSize;
 	}
 
 	// Adds card to discard pile, allows card to be put back into the deck later
 	public void addDiscardedCard(Card c) {
-		discardedCards.add(c);
+		discardedCards[discardedCardsSize] = c;
+		discardedCardsSize++;
 	}
 
 	// when there are not enough available cards, refills them
 	public void refillDeck() {
-		for (Card c : discardedCards) {
-			availCards.add(c);
-			discardedCards.remove(c);
+		int l = pack.length;
+		int pos = 0;
+		for (int i = 0; i < l; i++) {
+			if (availCards[i] == null) {
+				availCards[i] = discardedCards[pos];
+				
+				availCardsSize++;
+				discardedCardsSize--;
+				pos++;
+				
+				if (discardedCardsSize == 0) {
+					i = l;
+				}
+			}
 		}
 	}
 }

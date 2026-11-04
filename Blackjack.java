@@ -14,13 +14,14 @@ public class Blackjack {
         Players chose to hit, stand, double down, or split
 
         At end, dealer reveals face down card and must hit until reaching 17 or higher
-
+Hand(
         If dealer busts, all remaining players win
         If tie, then bet is returned
         Dealer collects bet if you lose
     */
 
     final String[] words = {"first", "second", "third", "fourth"}; // final String used in giving options, stored up here to save memory
+	final int maxHandSize = 10;
 
     private int totalPlayers;
     double[] bets;
@@ -40,14 +41,15 @@ public class Blackjack {
         d = new Deck(new String[]{"Clubs", "Spades", "Hearts", "Diamonds"}, 
         new String[]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}, 
         new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11});
+        System.out.println("The Deck has been created");
         // The deck is large enough that here, we don't need to worry about whether the deck is nearing empty (at max, 14 cards dealt)
 
         hands = new Hand[totalPlayers][4]; // creating players' hands
         for (int i = 0; i < totalPlayers; i++) {
-            hands[i][0] = new Hand(2, "Player " + (i + 1), d);
+            hands[i][0] = new Hand(maxHandSize, 2, "Player " + (i + 1), d);
         }
 
-        dealer = new Hand(2, "The Dealer", d); // creating dealer's hand
+        dealer = new Hand(maxHandSize, 2, "The Dealer", d); // creating dealer's hand
 
         game(sc);
     }
@@ -261,7 +263,7 @@ public class Blackjack {
                         index = 3;
                     }
 
-                    hands[n - 1][index] = new Hand(2, "Player " + n, d, temp);
+                    hands[n - 1][index] = new Hand(maxHandSize, 2, "Player " + n, d, temp);
                     System.out.println("------------------------------------------------");
                     options(sc, n, hands[n - 1][index], index);
 

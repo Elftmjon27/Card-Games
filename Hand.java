@@ -6,33 +6,34 @@
 
 import java.util.ArrayList;
 public class Hand {
-    private String name;
+	private int maxSize; // maximum cards a hand can have
+    private String name; // name of player that has this hand
+    private Card[] cards;
+    private int amount = 0;
     private ArrayList<Card> cards = new ArrayList<>(); // bad name, can't think of a better one
     // cards is an arraylist b/c regular arrays' property of immutable annoying when trying to add cards to hands
     private Deck deck; // another bad name
 
-    public Hand() { // default constructor
-        name = "Player";
-        deck = new Deck();
-        createHand(5);
-    }
-
-    public Hand(int n, String s, Deck d) { // specialized constructor
+    public Hand(int m, int n, String s, Deck d) { // specialized constructor
+		maxSize = m;
         name = s;
         deck = d;
         if (n > deck.getLength()) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
         }
         
+        cards = new Card[m];
         createHand(n);
     }
 
-    public Hand(int n, String s, Deck d, Card c) { // Specialized Hand with specific Card
+    public Hand(int m, int n, String s, Deck d, Card c) { // Specialized Hand with specific Card
+		maxSize = m;
         name = s;
         deck = d;
         if (n > deck.getLength()) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
         }
+        
         cards.add(c);
         createHand(n - 1);
     }
@@ -51,7 +52,8 @@ public class Hand {
     // draws a singular card
     public void drawCard() {
         Card c = deck.getCardRandom();
-        cards.add(c);
+        cards[amount] = c;
+        amount++;
     }
 
     // removes specific card from the hand
