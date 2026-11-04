@@ -4,7 +4,6 @@
 	General Purpose: Serve as the collection of cards that correspond to the player
 */
 
-import java.util.ArrayList;
 public class Hand {
     private String name; // name of player that has this hand
     private Card[] cards; // collection of cards
