@@ -7,14 +7,14 @@ public class Hand {
     // cards is an arraylist b/c regular arrays' property of immutable annoying when trying to add cards to hands
     private Deck deck; // another bad name
 
-    public Hand() { // default
+    public Hand() { // default constructor
         size = 5;
         name = "Player";
         deck = new Deck();
         createHand(0);
     }
 
-    public Hand(int n, String s, Deck d) { // Specialized Hand
+    public Hand(int n, String s, Deck d) { // specialized constructor
         size = n;
         name = s;
         deck = d;
@@ -24,22 +24,21 @@ public class Hand {
         createHand(0);
     }
 
-    public Hand(int n, String s, Deck d, Card c) { // SPecialized Hand with specific Card
+    public Hand(int n, String s, Deck d, Card c) { // Specialized Hand with specific Card
         size = n;
         name = s;
         deck = d;
         if (n > deck.getLength()) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
         }
-        drawCard(c);
+        cards.add(c);
         createHand(1);
     }
 
     // Creates the hand
 	private void createHand(int s) {
-        if (deck.getAmountAvail() - size < 0) {
-            System.out.println("The deck doesn't have enough cards to create a new hand");
-            return;
+        if (deck.getAmountAvail() - size < 0) { // Checks whether the deck has enough cards before creating hand
+            throw new IndexOutOfBoundsException("Not enough cards in deck");
         }
 
 		for (int i = s; i < size; i++) {
@@ -47,30 +46,9 @@ public class Hand {
 		}
 	}
 
-    // helper method to get available card
-    private Card findCard() {
-        if (deck.getAmountAvail() == 0) {
-            throw new IndexOutOfBoundsException("The Deck is empty");
-        }
-
-        int r = (int) (Math.random()*deck.getLength());
-        // As the deck gets smaller (relative to initial size), this will take longer and longer (be aware of run-time)
-
-        while (!(deck.getAvail(r))) { // ensures card is available, only false if card not available
-			r = (int) (Math.random()*deck.getLength());
-		}
-
-        deck.updateCard(r);
-        return deck.getCard(r);
-    }
-
-    // adds a random card available in the deck
+    // draws a singular card
     public void drawCard() {
-        cards.add(findCard());
-    }
-
-    // adds a specific card (doesn't check if available in the deck)
-    public void drawCard(Card c) {
+        Card c = deck.getCardRandom();
         cards.add(c);
     }
 
@@ -101,8 +79,7 @@ public class Hand {
 
     // prints out card at index i
     public void printCard(int i) {
-        Card c = cards.get(i);
-        c.print();
+        cards.get(i).print();
     }
 
     // Returns the card at index i

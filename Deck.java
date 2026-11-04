@@ -1,62 +1,54 @@
-public class Deck { // Deck of cards at beginning of game (from box)
-	private String[] suits;
-    private String[] faces;
-	private int[] points; // corresponds to faces
+/*
+	Name: Jonathan
+	Class Name: Deck
+	General Purpose: Serve as the collection of cards out of the pack, stores the cards that players will draw from
+*/
 
-	private Card[] pack; // deck of cards created from cards described by suits, faces, and 
-	private boolean[] avail; // stores whether the card is available in the pack
-	private int amountAvail;
-	
-	public Deck() { // default
-		suits = new String[]{"Clubs", "Spades", "Hearts", "Diamonds"};
-		faces = new String[]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-		points = new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+import java.util.ArrayList;
+public class Deck {
+	private Card[] pack; // deck of cards created from cards described by suits, faces, and point values of the faces
+	private ArrayList<Card> availCards = new ArrayList<>(); // subset of pack, stores all cards available for players to draw
+	private ArrayList<Card> discardedCards = new ArrayList<>(); // subset of deck, stores all cards that have been discarded, thus availale to be added back into the deck
+
+	public Deck() { // default constructor
 		pack = new Card[52];
-		avail = new boolean[52];
-		amountAvail = 52;
-		createDeck();
+		createDeck(new String[]{"Clubs", "Spades", "Hearts", "Diamonds"}, 
+		new String[]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}, 
+		new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14});
 	}
 	
-	public Deck(String[] s1, String[] s2, int[] i) { // specific deck of cards
-		int l = s1.length * s2.length;
-		if (l != 0 && s2.length == i.length) { 
-			suits = s1;
-			faces = s2;
-			points = i;
-			pack = new Card[l];
-			avail = new boolean[l];
-			amountAvail = l;
-			createDeck();
+	public Deck(String[] s1, String[] s2, int[] p) { // specialized constructor
+		if (s1.length * s2.length != 0 && s2.length == p.length) { 
+			pack = new Card[s1.length * s2.length];
+			createDeck(s1, s2, p);
 		} else {
 			throw new IllegalArgumentException("No empty arrays && point value array must be the same length as face array");
 		}
 	}
 
-	// helper method for specialized constructor
-	private void createDeck() {
+	// helper method for both constructors, creates the collection of cards
+	private void createDeck(String[] suits, String[] faces, int[] points) {
 		int index = 0;
+		Card c;
 		for (String s : suits) {
 			for (int i = 0; i < faces.length; i++) {
-				pack[index] = new Card(s, faces[i], points[i]);
-				avail[index] = true;
-				index++;
+				c = new Card(s, faces[i], points[i]);
+				pack[index] = c;
+				availCards.add(c);
 			}
 		}
 	}
 
-	// updates the availability of a card
-	public void updateCard(int i) { // int is index of card
-		if (avail[i]) {
-			amountAvail--; // if true, then it will turn to false, so lower amount Avail
-		} else {
-			amountAvail++;
+	// Draws a singular card from the avail cards in the deck, removing it from viable options
+	public Card getCardRandom() {
+		if (availCards.size() == 0) {
+			throw new IndexOutOfBoundsException("The Deck is empty");
 		}
-		avail[i] = !avail[i]; // swaps parity
-	}
 
-	// getter for Hand class
-	public Card getCard(int i) { // int i is index of card
-		return pack[i];
+		Card c = availCards.get((int) (Math.random() * availCards.size()));
+		availCards.remove(c);
+		discardedCards.add(c);
+		return c;
 	}
 
 	// retuns the length of the deck
@@ -64,13 +56,16 @@ public class Deck { // Deck of cards at beginning of game (from box)
 		return pack.length;
 	}
 
-	// getter for Hand class, returns whether card is available in deck
-	public boolean getAvail(int i) {
-		return avail[i];
-	}
-
 	// returns the number of cards available in the deck
 	public int getAmountAvail() {
-		return amountAvail;
+		return availCards.size();
+	}
+
+	// when there are not enough available cards, refills them
+	public void refillDeck() {
+		for (Card c : discardedCards) {
+			availCards.add(c);
+			discardedCards.remove(c);
+		}
 	}
 }

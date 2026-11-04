@@ -20,14 +20,12 @@ public class Blackjack {
         Dealer collects bet if you lose
     */
 
-    final String[] actions = {"Hit", "Stand", "Double Down", "Split", "Action Guide"};
-    final String[] words = {"first", "second", "third", "fourth"};
+    final String[] words = {"first", "second", "third", "fourth"}; // final String used in giving options, stored up here to save memory
 
     private int totalPlayers;
     double[] bets;
     Deck d;
     Hand[][] hands;
-    boolean[][] active;
     Hand dealer;
 
     // Gathers info about game (player count, players' hands, bets, etc)
@@ -42,17 +40,14 @@ public class Blackjack {
         d = new Deck(new String[]{"Clubs", "Spades", "Hearts", "Diamonds"}, 
         new String[]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}, 
         new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11});
+        // The deck is large enough that here, we don't need to worry about whether the deck is nearing empty (at max, 14 cards dealt)
 
         hands = new Hand[totalPlayers][4]; // creating players' hands
         for (int i = 0; i < totalPlayers; i++) {
             hands[i][0] = new Hand(2, "Player " + (i + 1), d);
         }
-        active = new boolean[totalPlayers][4]; // array that records whether a player has completed the turns on their hands (true if they haven't)
-        for (int j = 0; j < totalPlayers; j++) {
-            active[j][0] = true;
-        }
 
-        dealer = new Hand(2, "The Dealer", d); // crearing dealer's hand
+        dealer = new Hand(2, "The Dealer", d); // creating dealer's hand
 
         game(sc);
     }
@@ -203,10 +198,7 @@ public class Blackjack {
         }
         
         System.out.println("Here are your options: ");
-        for (String a : actions) {
-            System.out.println(a);
-        }
-        System.out.println("\n");
+        System.out.println("Hit\nStand\nDouble Down\nSplit\nAction Guide\n\n");
 
        chooseOptions(sc, n, h, i); 
     }
@@ -253,30 +245,33 @@ public class Blackjack {
                 chooseOptions(sc, n, h, i);
             }
         } else if (input.contains("split")) {
-            if (h.getLength() == 2 && h.getCard(0).getPoint() == h.getCard(1).getPoint() && !active[n - 1][3] && h.getDeck().getAmountAvail() >= 2) {
+            if (h.getLength() == 2 && h.getCard(0).getPoint() == h.getCard(1).getPoint() && h.getDeck().getAmountAvail() >= 2) {
                 // only allow two identital valued cards & only 3 splits allowed (checks if last hand slot for player empty) & whether deck has enough cards
+                if (hands[n - 1][3] != null) { // checks whether player is on 4th split
+                    System.out.println("\nYou cannot split more than 4 times\n");
+                    chooseOptions(sc, n, h, i);
+                } else {
+                    Card temp = h.getCard(0);
+                    h.removeCard(temp);
+                    h.drawCard();
+                    h.updateSize(2); 
 
-                Card temp = h.getCard(0);
-                h.removeCard(temp);
-                h.drawCard();
-                h.updateSize(2); 
+                    int index;
+                    if (hands[n - 1][1] == null) { // first split
+                        index = 1;
+                    } else if (hands[n - 1][2] == null) { // second split
+                        index = 2;
+                    } else { // third (last) split
+                        index = 3;
+                    }
 
-                int index;
-                if (!active[n - 1][1]) { // first split
-                    index = 1;
-                } else if (!active[n - 1][2]) { // second split
-                   index = 2;
-                } else { // last (third) split
-                   index = 3;
+                    hands[n - 1][index] = new Hand(2, "Player " + n, d, temp);
+                    System.out.println("------------------------------------------------");
+                    options(sc, n, hands[n - 1][index], index);
+
+                    System.out.println("------------------------------------------------");
+                    options(sc, n, h, i);
                 }
-
-                hands[n - 1][index] = new Hand(2, "Player " + n, d, temp);
-                active[n-1][index] = true;
-                System.out.println("------------------------------------------------");
-                options(sc, n, hands[n - 1][index], index);
-
-                System.out.println("------------------------------------------------");
-                options(sc, n, h, 0);
             } else {
                 System.out.println("\nUnfortunately, do you not meet the requirements to split or the deck doesn't have enough cards to split\n");
                 chooseOptions(sc, n, h, i);
@@ -301,25 +296,29 @@ public class Blackjack {
 
         for (int i = 0; i < totalPlayers; i++) {
             state = 2;
-            if (active[i][1]) {
+            if (hands[i][1] != null) {
                 for (int j = 0; j < 4; j++) {
-                    n = calculatePoints(hands[i][j]);
-                    int currentState = 2;
+                    if (hands[i][j] != null) {
+                        n = calculatePoints(hands[i][j]);
+                        int currentState = 2;
 
-                    if (n <= 21) { // only checks for valid decks
-                        if(dealerScore > 21 || n > dealerScore) { // wins if dealer busts or less than dealer's score (not busted)
-                            currentState = 0;
-                        } else if (n == dealerScore) { // ties if they are the same (previous condition checks if dealer has busted)
-                            currentState = 1;
+                        if (n <= 21) { // only checks for valid decks
+                            if(dealerScore > 21 || n > dealerScore) { // wins if dealer busts or less than dealer's score (not busted)
+                                currentState = 0;
+                            } else if (n == dealerScore) { // ties if they are the same (previous condition checks if dealer has busted)
+                                currentState = 1;
+                            }
                         }
-                    }
 
-                    if (currentState < state) {
-                        state = currentState;
-                    }
+                        if (currentState < state) {
+                            state = currentState;
+                        }
 
-                    if (state == 0) {
-                        j = 4; // ends loop early
+                        if (state == 0) {
+                            j = 4; // ends loop early
+                        }
+                    } else { // ends loop early if next slot that holds references to hands is null (meaning no next hand to check)
+                        j = 4;
                     }
                 }
             } else {
