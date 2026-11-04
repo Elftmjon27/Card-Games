@@ -29,9 +29,10 @@ public class Deck {
 	// helper method for both constructors, creates the collection of cards
 	private void createDeck(String[] suits, String[] faces, int[] points) {
 		int index = 0;
+		int l = faces.length;
 		Card c;
 		for (String s : suits) {
-			for (int i = 0; i < faces.length; i++) {
+			for (int i = 0; i < l; i++) {
 				c = new Card(s, faces[i], points[i]);
 				pack[index] = c;
 				availCards.add(c);
