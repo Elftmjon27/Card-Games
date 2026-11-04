@@ -1,2 +1,2 @@
 # Card-Games
-Repo for Cards, Decks, and games
+Repo for card games with Card. Deck, and Hand objects for the games
