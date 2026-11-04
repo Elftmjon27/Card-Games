@@ -35,6 +35,7 @@ public class Deck {
 			for (int i = 0; i < l; i++) {
 				c = new Card(s, faces[i], points[i]);
 				pack[index] = c;
+				index++;
 				availCards.add(c);
 			}
 		}
