@@ -86,7 +86,6 @@ public class Blackjack {
             if (dealer.getDeck().getAmountAvail() != 0) {
                 System.out.println("\nhit");
                 dealer.drawCard();
-                dealer.updateSize(dealer.getLength() + 1);
                 dealer.printCard(index);
                 index++;
             } else {
@@ -210,7 +209,6 @@ public class Blackjack {
         if (input.contains("hit")) {
             if (h.getDeck().getAmountAvail() != 0) {
                 h.drawCard();
-                h.updateSize(h.getLength() + 1);
 
                 h.getCard(h.getLength() - 1).print();
                 System.out.println("Current Points: " + calculatePoints(h) + "\n");
@@ -228,7 +226,6 @@ public class Blackjack {
         } else if (input.contains("double") || input.contains("down")) {
             if (h.getDeck().getAmountAvail() != 0) {
                 h.drawCard();
-                h.updateSize(h.getLength() + 1);
                 printHand(h);
 
                 bets[n - 1] *= 2;
@@ -254,8 +251,7 @@ public class Blackjack {
                     Card temp = h.getCard(0);
                     h.removeCard(temp);
                     h.drawCard();
-                    h.updateSize(2); 
-
+                    
                     int index;
                     if (hands[n - 1][1] == null) { // first split
                         index = 1;

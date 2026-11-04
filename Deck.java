@@ -47,7 +47,6 @@ public class Deck {
 
 		Card c = availCards.get((int) (Math.random() * availCards.size()));
 		availCards.remove(c);
-		discardedCards.add(c);
 		return c;
 	}
 
@@ -59,6 +58,11 @@ public class Deck {
 	// returns the number of cards available in the deck
 	public int getAmountAvail() {
 		return availCards.size();
+	}
+
+	// Adds card to discard pile, allows card to be put back into the deck later
+	public void addDiscardedCard(Card c) {
+		discardedCards.add(c);
 	}
 
 	// when there are not enough available cards, refills them
