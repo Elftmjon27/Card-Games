@@ -7,6 +7,7 @@ public class Play {
     final static String[] options = {"Blackjack"};
 
     public static void main(String[] args) {
+
         System.out.println("We have the following games:");
         for (String s : options) {
             System.out.println(s);

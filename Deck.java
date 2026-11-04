@@ -58,7 +58,7 @@ public class Deck {
 
 		int r = (int) (Math.random()*pack.length);
 		
-		while (availCards[r] != null) {
+		while (availCards[r] == null) {
 			r = (int) (Math.random()*pack.length);
 		}
 		

@@ -41,7 +41,6 @@ Hand(
         d = new Deck(new String[]{"Clubs", "Spades", "Hearts", "Diamonds"}, 
         new String[]{"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}, 
         new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11});
-        System.out.println("The Deck has been created");
         // The deck is large enough that here, we don't need to worry about whether the deck is nearing empty (at max, 14 cards dealt)
 
         hands = new Hand[totalPlayers][4]; // creating players' hands

@@ -15,7 +15,7 @@ public class Hand {
         name = "Player";
         deck = new Deck();
         cards = new Card[12];
-        createHand(5);
+        createHand(5, 0);
     }
 
     /* Meaning of parameters:
@@ -32,7 +32,7 @@ public class Hand {
         }
         
         cards = new Card[m];
-        createHand(n);
+        createHand(n, 0);
     }
 
     public Hand(int m, int n, String s, Deck d, Card c) { // Specialized Hand with specific Card
@@ -44,16 +44,22 @@ public class Hand {
         
         cards = new Card[m];
         cards[0] = c;
-        createHand(n - 1);
+        amount++;
+        System.out.print("Split hand is made w/ first card = ");
+        cards[0].print();
+        createHand(n, 1); 
     }
 
     // Creates the hand
-	private void createHand(int size) {
+	private void createHand(int size, int start) {
         if (deck.getAmountAvail() - size < 0) { // Checks whether the deck has enough cards before creating hand
             throw new IndexOutOfBoundsException("Not enough cards in deck");
         }
+        if (start == 1) {
+            System.out.println("start = " + start + " & size = " + size);
+        }
 
-		for (int i = 0; i < size; i++) {
+		for (int i = start; i < size; i++) {
             drawCard();
 		}
 	}
@@ -68,13 +74,18 @@ public class Hand {
     // removes specific card from the hand
     public void removeCard(Card c) {
         boolean adjust = false;
+        amount--;
         for (int i = 0; i < amount; i++) {
             if (cards[i].equals(c) && !adjust) {
                 cards[i] = null;
                 adjust = true;
             }
-            if (adjust && i != amount - 1) {
-                cards[i] = cards[i + 1];
+            if (adjust) {
+                if (i != amount) {
+                    cards[i] = cards[i + 1];
+                } else {
+                    cards[i] = null;
+                }
             }
         }
     }
@@ -113,8 +124,8 @@ public class Hand {
 
     // prints out the cards in the hand
     public void print() {
-        for(Card c: cards) {
-            c.print();
+        for (int i = 0; i < amount; i++) {
+            cards[i].print();
         }
     }
 
