@@ -4,7 +4,6 @@
 	General Purpose: Serve as the collection of cards out of the pack, stores the cards that players will draw from
 */
 
-import java.util.ArrayList;
 public class Deck {
 	private Card[] pack; // deck of cards created from cards described by suits, faces, and point values of the faces
 	private Card[] availCards; // subset of pack, stores all cards available for players to draw

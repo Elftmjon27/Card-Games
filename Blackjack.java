@@ -21,7 +21,7 @@ Hand(
     */
 
     final String[] words = {"first", "second", "third", "fourth"}; // final String used in giving options, stored up here to save memory
-	final int maxHandSize = 10;
+	final int maxHandSize = 11; // maximum number of cards possible for a hand to have
 
     private int totalPlayers;
     double[] bets;

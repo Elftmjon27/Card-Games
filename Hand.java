@@ -6,16 +6,25 @@
 
 import java.util.ArrayList;
 public class Hand {
-	private int maxSize; // maximum cards a hand can have
     private String name; // name of player that has this hand
-    private Card[] cards;
+    private Card[] cards; // collection of cards
     private int amount = 0;
-    private ArrayList<Card> cards = new ArrayList<>(); // bad name, can't think of a better one
-    // cards is an arraylist b/c regular arrays' property of immutable annoying when trying to add cards to hands
-    private Deck deck; // another bad name
+    private Deck deck; // reference to the deck where the cards come from
 
+    public Hand() { // default constructor
+        name = "Player";
+        deck = new Deck();
+        cards = new Card[12];
+        createHand(5);
+    }
+
+    /* Meaning of parameters:
+    int m is the max amount of cards that a hand can hold (necessary b/c hand is an array of fixed size)
+    int n is the amount of cards that the hand starts with
+    String s is the name of who's hand this is
+    Deck d is the deck where the cards stored in the hand comes from
+    */
     public Hand(int m, int n, String s, Deck d) { // specialized constructor
-		maxSize = m;
         name = s;
         deck = d;
         if (n > deck.getLength()) {
@@ -27,14 +36,14 @@ public class Hand {
     }
 
     public Hand(int m, int n, String s, Deck d, Card c) { // Specialized Hand with specific Card
-		maxSize = m;
         name = s;
         deck = d;
         if (n > deck.getLength()) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
         }
         
-        cards.add(c);
+        cards = new Card[m];
+        cards[0] = c;
         createHand(n - 1);
     }
 
@@ -58,24 +67,33 @@ public class Hand {
 
     // removes specific card from the hand
     public void removeCard(Card c) {
-        cards.remove(c);
+        boolean adjust = false;
+        for (int i = 0; i < amount; i++) {
+            if (cards[i].equals(c) && !adjust) {
+                cards[i] = null;
+                adjust = true;
+            }
+            if (adjust && i != amount - 1) {
+                cards[i] = cards[i + 1];
+            }
+        }
     }
 
     // Shuffles the cards in hand
     public void shuffle() {
         Card temp;
         int r;
-        for (int i = 0; i < cards.size(); i++) { // swaps every card with some other random card
-            r = (int) (Math.random()*cards.size());
-            temp = cards.get(i);
-            cards.set(i, cards.get(r));
-            cards.set(r, temp);
+        for (int i = 0; i < amount; i++) { // swaps every card with some other random card
+            r = (int) (Math.random()*amount);
+            temp = cards[i];
+            cards[i] = cards[r];
+            cards[r] = temp;
         }
     }
 
     // Returns the card at index i
     public Card getCard(int i) {
-        return cards.get(i);
+        return cards[i];
     }
 
     // Returns the Deck the hand comes from
@@ -85,7 +103,7 @@ public class Hand {
 
     // returns the number of cards in the hand
     public int getLength() {
-        return cards.size();
+        return amount;
     }
 
     // returns the name of the owner of the hand
@@ -102,6 +120,6 @@ public class Hand {
 
     // prints out card at index i
     public void printCard(int i) {
-        cards.get(i).print();
+        cards[i].print();
     }
 }
