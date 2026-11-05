@@ -64,7 +64,7 @@ public class Deck {
 		
 		Card c = availCards[r];
 		availCards[r] = null;
-		addDiscardedCard(c);
+		availCardsSize--;
 	
 		return c;
 	}

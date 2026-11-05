@@ -216,6 +216,7 @@ Hand(
 
                 if (calculatePoints(h) > 21) {
                     System.out.println("\nUnfortunately, your total points (" + calculatePoints(h) + ") is over 21, so you have lost $" + bets[n - 1]);
+                    h.discardHand();
                     return;
                 }
             } else {
@@ -233,6 +234,7 @@ Hand(
 
                 if (calculatePoints(h) > 21) {
                     System.out.println("\nUnfortunately, your total points (" + calculatePoints(h) + ") is over 21, so you have lost $" + bets[n - 1]);
+                    h.discardHand();
                     return;
                 }
 

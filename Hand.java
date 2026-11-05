@@ -71,6 +71,15 @@ public class Hand {
 
     // draws a singular card
     public void drawCard() {
+        if (amount == cards.length) {
+            throw new IndexOutOfBoundsException("Hand is full, you can't add draw another card");
+        } else if (deck.getAmountAvail() == 0) {
+            deck.refillDeck(); // tries refilling the deck before throwing error
+            if (deck.getAmountAvail() == 0) {
+                throw new IndexOutOfBoundsException("Deck is empty");
+            }
+        }
+
         Card c = deck.getCardRandom();
         cards[amount] = c;
         amount++;
@@ -93,6 +102,15 @@ public class Hand {
                 }
             }
         }
+    }
+
+    // adds the hand into the discard pile
+    public void discardHand() {
+        for (int i = 0; i < amount; i++) {
+            deck.addDiscardedCard(cards[i]);
+            cards[i] = null;
+        }
+        amount = 0;
     }
 
     // Shuffles the cards in hand
