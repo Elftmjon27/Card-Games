@@ -29,6 +29,9 @@ public class Hand {
         if (n > deck.getLength()) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
         }
+        if (n > m) {
+            throw new IllegalArgumentException("Hand cannot have more cards than max size");
+        }
         
         cards = new Card[m];
         createHand(n, 0);
@@ -39,6 +42,9 @@ public class Hand {
         deck = d;
         if (n > deck.getLength()) {
             throw new IllegalArgumentException("Hand cannot be bigger than the deck");
+        }
+        if (n > m) {
+            throw new IllegalArgumentException("Hand cannot have more cards than max size");
         }
         
         cards = new Card[m];
