@@ -36,6 +36,11 @@ public class Card {
 		point = n;
 	}
 
+	// modfiies the card's suit
+	public void updateSuit(String s) {
+		suit = s;
+	}
+
 	// Prints the Card's face and suit
 	public void print() {
 		System.out.println(face + " of " + suit);
