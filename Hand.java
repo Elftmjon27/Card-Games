@@ -100,7 +100,9 @@ public class Hand {
                 } else {
                     cards[i] = null;
                 }
-            }
+            } else {
+				amount++; // accounts for removing 1 from amount at the beginning if not removing anything
+			}
         }
     }
 
