@@ -24,10 +24,10 @@ Hand(
 	final int maxHandSize = 11; // maximum number of cards possible for a hand to have
 
     private int totalPlayers;
-    double[] bets;
-    Deck d;
-    Hand[][] hands;
-    Hand dealer;
+    private double[] bets;
+    private Deck d;
+    private Hand[][] hands;
+    private Hand dealer;
 
     // Gathers info about game (player count, players' hands, bets, etc)
     public Blackjack(Scanner sc) {
